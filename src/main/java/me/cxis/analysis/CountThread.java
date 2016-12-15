@@ -3,7 +3,6 @@ package me.cxis.analysis;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
