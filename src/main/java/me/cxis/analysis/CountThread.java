@@ -32,7 +32,6 @@ public class CountThread implements Callable<Integer> {
     public Integer call() throws Exception {
         Thread.sleep(3000);
         RandomAccessFile randomAccessFile = new RandomAccessFile(file.toRealPath().toString(),"rw");
-        FileChannel fileChannel = randomAccessFile.getChannel();
         randomAccessFile.seek(start);
         long contentLength = end - start + 1;
         long times = contentLength / DATA_CHUNK + 1;
