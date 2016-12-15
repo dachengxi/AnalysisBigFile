@@ -3,6 +3,7 @@ package me.cxis.analysis;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -17,7 +18,7 @@ public class CountThread implements Callable<Integer> {
     private Path file;
     private String word;
     private int count = 0;
-    private final int BYTE_LENGTH = 256;
+    private final int DATA_CHUNK = 256 * 1024 * 1024;
 
     public CountThread(CountDownLatch countDoneSingal, long start, long end, Path file, String word) {
         this.countDoneSingal = countDoneSingal;
@@ -31,14 +32,15 @@ public class CountThread implements Callable<Integer> {
     public Integer call() throws Exception {
         Thread.sleep(3000);
         RandomAccessFile randomAccessFile = new RandomAccessFile(file.toRealPath().toString(),"rw");
+        FileChannel fileChannel = randomAccessFile.getChannel();
         randomAccessFile.seek(start);
-        long contentLength = end - start;
-        long times = contentLength / BYTE_LENGTH + 1;
+        long contentLength = end - start + 1;
+        long times = contentLength / DATA_CHUNK + 1;
         byte[] bytes;
-        if(contentLength < BYTE_LENGTH){
+        if(contentLength < DATA_CHUNK){
             bytes = new byte[(int)contentLength];
         }else {
-            bytes = new byte[BYTE_LENGTH];
+            bytes = new byte[DATA_CHUNK];
         }
         for(int i = 0; i < times; i++){
             int read = randomAccessFile.read(bytes);
